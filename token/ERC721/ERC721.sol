@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity >=0.4.0 <0.7.0;
 
 import "../../GSN/Context.sol";
 import "./IERC721.sol";
@@ -324,7 +324,7 @@ contract ERC721 is Context, ERC165, IERC721 {
      * @param _data bytes optional data to send along with the call
      * @return bool whether the call correctly returned the expected magic value
      */
-    function _checkOnERC721Received(address from, address to, uint256 tokenId, bytes memory _data)
+    /*function _checkOnERC721Received(address from, address to, uint256 tokenId, bytes memory _data)
         internal returns (bool)
     {
         if (!to.isContract()) {
@@ -332,16 +332,11 @@ contract ERC721 is Context, ERC165, IERC721 {
         }
         // solhint-disable-next-line avoid-low-level-calls
         (bool success, bytes memory returndata) = to.call(abi.encodeWithSelector(
-            IERC721Receiver(to).onERC721Received.selector,
-            _msgSender(),
-            from,
-            tokenId,
-            _data
-        ));
+            IERC721Receiver(to).onERC721Received.selector,_msgSender(),from,tokenId,_data));
         if (!success) {
             if (returndata.length > 0) {
                 // solhint-disable-next-line no-inline-assembly
-                assembly {
+                assembly{
                     let returndata_size := mload(returndata)
                     revert(add(32, returndata), returndata_size)
                 }
@@ -353,7 +348,7 @@ contract ERC721 is Context, ERC165, IERC721 {
             return (retval == _ERC721_RECEIVED);
         }
     }
-
+    */
     /**
      * @dev Private function to clear current approval of a given token ID.
      * @param tokenId uint256 ID of the token to be transferred
