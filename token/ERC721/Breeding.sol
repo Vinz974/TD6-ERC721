@@ -10,13 +10,13 @@ struct Animal{
     string species;
     uint animalId;
     string name;
-    uint age;
     string color;
     uint winCount;
     uint lossCount;
 }
 
 Animal[] public animals;
+address[] public Owners;
 mapping(uint => address) animalToOwner;
 mapping(address => uint) ownerAnimalCount;
 
@@ -29,6 +29,15 @@ function AnimalsByOwner(address _owner) public view returns(Animal[] memory) {
     }
     return Breed;
 }
+
+function registerBreeder( address _owner ) public onlyOwner {
+    Owners.push(_owner);
+}
+
+function getBreeder() public returns(address[] memory){
+    return Owners;
+}
+
 
 
 }
