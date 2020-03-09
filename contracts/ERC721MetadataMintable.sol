@@ -1,7 +1,7 @@
-pragma solidity ^0.5.0;
+pragma solidity >= 0.5.0;
 
 import "./ERC721Metadata.sol";
-import "../../access/roles/MinterRole.sol";
+import "./MinterRole.sol";
 
 
 /**

@@ -1,7 +1,7 @@
-pragma solidity ^0.5.0;
+pragma solidity >= 0.5.0;
 
 import "./ERC721.sol";
-import "../../lifecycle/Pausable.sol";
+import "./Pausable.sol";
 
 /**
  * @title ERC721 Non-Fungible Pausable token

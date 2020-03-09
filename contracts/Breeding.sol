@@ -1,4 +1,4 @@
-pragma solidity >=0.5.0;
+pragma solidity >= 0.5.0;
 
 import "./ERC721.sol";
 
@@ -18,7 +18,7 @@ struct Animal{
 
 Animal[] public animals;
 address[] public Owners;
-string[] colors = ["grey", "red", "blue", "white", "brown", "black"]; 
+string[] public colors = ["grey","red","blue","white","brown","black"];
 mapping(uint => address) animalToOwner;
 mapping(address => uint) ownerAnimalCount;
 mapping(string => uint) ColorToId;
@@ -36,7 +36,6 @@ function AnimalsByOwner(address _owner) public view returns(Animal[] memory) {
     }
     return Breed;
 }
-               
 function declareAnimal(string memory _species, uint _age, string memory _name, string memory _color) public {
     Animal storage newAnimal = Animal(_species, _name,age, 1 seconds, _color, 0, 0);
     ownerAnimalCount = ownerAnimalCount.add(1);
@@ -54,10 +53,10 @@ function deadAnimal(uint _animalId) public onlyOwner {
 
 function randMod(uint _modulus) internal returns(uint) {
     randNonce = randNonce.add(1);
-    return uint(keccak256(abi.encodePacked(now, msg.sender, randNonce))) % _modulus;
+    return uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, randNonce))) % _modulus;
   }
 
-function BreedAnimal(uint _animalId1, uint _animalId2) internal isReadyToBreed(_animalId1) isReadyToBreed(_animalId2) onlyOwnerOf(_animalId1) onlyOwnerOf(_animalId2){
+/*function BreedAnimal(uint _animalId1, uint _animalId2) {
     require(animals[_animalId1].species == animals[_animalId2].species, "Not the same species");
     uint rand = randMod(2);
     string memory _color;
@@ -71,7 +70,7 @@ function BreedAnimal(uint _animalId1, uint _animalId2) internal isReadyToBreed(_
     animals[_animalId1].species = 0;
     animals[_animalId1].readyTime = 1 seconds;
 }
-
+*/
 modifier isReadyToBreed(_animalId) {
     require(animals[_animalId].age >= 2 years, "Animal too young to couple");
     require(animals[_animalId].readyTime >= 0.5 years, "Animal already coupled in the previous 6 months");

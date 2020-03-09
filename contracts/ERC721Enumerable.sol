@@ -1,9 +1,9 @@
 pragma solidity >=0.5.0;
 
-import "../../GSN/Context.sol";
+import "./Context.sol";
 import "./IERC721Enumerable.sol";
 import "./ERC721.sol";
-import "../../introspection/ERC165.sol";
+import "./ERC165.sol";
 
 /**
  * @title ERC-721 Non-Fungible Token with optional enumeration extension logic
