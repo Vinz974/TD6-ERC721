@@ -42,7 +42,7 @@ contract Ownable is Context {
     /**
      * @dev Returns true if the caller is the current owner.
      */
-    function isOwner() public view returns (bool) {
+    function isOwner() public virtual view returns (bool) {
         return _msgSender() == _owner;
     }
 

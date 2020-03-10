@@ -4,7 +4,7 @@ pragma experimental ABIEncoderV2;
 import "./ERC721.sol";
 import "./Ownable.sol";
 
-contract Breeding is ERC721{
+contract Breeding is ERC721, Ownable {
 
 struct Animal{
     string species;
@@ -29,16 +29,19 @@ event NewAnimal(uint Id, string _species, string _name, uint age, uint _readyTim
 event DeadAnimal(uint Id, string _species, string _name, uint age, uint _readyTime, string _color,uint winCount, uint lossCount);
 event BreedAnimal(uint Id1, uint Id2);
 
-function AnimalsByOwner(address _owner) public view returns(Animal[] memory) {
+/*function AnimalsByOwner(address _owner) public view returns(Animal[] memory) {
+    Animal memory cat = Animal("cat", "felix", 2, 2, "red", 0, 0);
     Animal[] memory Breeds;
-    for (uint32 i = 0; i < animals.length; i++) {
+    Breeds.push(cat);
+    for (uint32 i = 1; i < animals.length; i++) {
         if (animalToOwner[i] == _owner) {
-            //Breeds.push(animals[i]);
+            Breeds.push(animals[i]);
             return Breeds;
         }
     }
 
-}
+}*/
+
 function declareAnimal(string memory _species, uint _age, string memory _name, string memory _color) public {
     Animal memory newAnimal = Animal(_species, _name, _age, 1 seconds, _color, 0, 0);
     ownerAnimalCount[msg.sender] = ownerAnimalCount[msg.sender].add(1);
@@ -61,8 +64,7 @@ function randMod(uint _modulus) internal returns(uint) {
     return uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, randNonce))) % _modulus;
   }
 
-/*function BreedAnimal(uint _animalId1, uint _animalId2) public {
-    require(animals[_animalId1].species == animals[_animalId2].species, "Not the same species");
+function breedAnimal(uint _animalId1, uint _animalId2) public  ReadyToBreed(_animalId1) ReadyToBreed(_animalId2) {
     uint rand = randMod(2);
     string memory _color;
     if (rand == 1){
@@ -71,11 +73,14 @@ function randMod(uint _modulus) internal returns(uint) {
     else {
         _color = animals[_animalId2].color;
     }
-    declareAnimal(animals[_animalId1].species, animals[_animalId1].name[3:] + animals[_animalId1].name[3:], 1 seconds, 0, color, 0, 0);
-    animals[_animalId1].species = 0;
+    emit BreedAnimal(_animalId1, _animalId2);
+    declareAnimal(animals[_animalId1].species,1 seconds, animals[_animalId1].name, _color);
+    animals[_animalId2].readyTime = 1 seconds;
     animals[_animalId1].readyTime = 1 seconds;
+
+
 }
-*/
+
 modifier ReadyToBreed(uint _animalId) {
     require(animals[_animalId].age >= 2, "Animal too young to couple");
     require(animals[_animalId].readyTime >= 1, "Animal already coupled in the previous 6 months");
@@ -86,12 +91,12 @@ function registerOwner( address _owner ) public {
     Owners.push(_owner);
 }
 
-/*modifier onlyRegistered() {
+modifier onlyRegistered() {
     require(isOwner(),"You are not an owner");
     _;
 }
-*/
-function getOwner() public returns(address[] memory){
+
+function getOwner() public view returns(address[] memory){
     return Owners;
 }
 

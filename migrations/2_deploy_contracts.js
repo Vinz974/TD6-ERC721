@@ -3,8 +3,8 @@ var Breeding = artifacts.require("Breeding");
 
 
 module.exports = function(deployer) {
-  deployer.deploy(ERC721,arg="d_value", coderType="uint256",value=2);
+  deployer.deploy(ERC721);
   deployer.link(ERC721,Breeding);
-  deployer.deploy(Breeding,arg="d_value", coderType="uint256",value=2);
+  deployer.deploy(Breeding);
 
 };
