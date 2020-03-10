@@ -42,7 +42,8 @@ event BreedAnimal(uint Id1, uint Id2);
 
 }*/
 
-function declareAnimal(string memory _species, uint _age, string memory _name, string memory _color) public {
+function declareAnimal(address _owner, string memory _species, uint _age, string memory _name, string memory _color) public {
+    require(msg.sender == _owner, "You are not declaring your animal");
     Animal memory newAnimal = Animal(_species, _name, _age, 1 seconds, _color, 0, 0);
     ownerAnimalCount[msg.sender] = ownerAnimalCount[msg.sender].add(1);
     animals.push(newAnimal);
@@ -64,7 +65,8 @@ function randMod(uint _modulus) internal returns(uint) {
     return uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, randNonce))) % _modulus;
   }
 
-function breedAnimal(uint _animalId1, uint _animalId2) public  ReadyToBreed(_animalId1) ReadyToBreed(_animalId2) {
+function breedAnimal(uint _animalId1, uint _animalId2) public
+ReadyToBreed(_animalId1) ReadyToBreed(_animalId2) OwnerOf(_animalId1) OwnerOf(_animalId2){
     uint rand = randMod(2);
     string memory _color;
     if (rand == 1){
@@ -74,7 +76,7 @@ function breedAnimal(uint _animalId1, uint _animalId2) public  ReadyToBreed(_ani
         _color = animals[_animalId2].color;
     }
     emit BreedAnimal(_animalId1, _animalId2);
-    declareAnimal(animals[_animalId1].species,1 seconds, animals[_animalId1].name, _color);
+    declareAnimal(animalToOwner[_animalId1], animals[_animalId1].species,1 seconds, animals[_animalId1].name, _color);
     animals[_animalId2].readyTime = 1 seconds;
     animals[_animalId1].readyTime = 1 seconds;
 
@@ -95,6 +97,11 @@ modifier onlyRegistered() {
     require(isOwner(),"You are not an owner");
     _;
 }
+
+modifier OwnerOf(uint _animalId) {
+    require(msg.sender == animalToOwner[_animalId],"");
+    _;
+  }
 
 function getOwner() public view returns(address[] memory){
     return Owners;
