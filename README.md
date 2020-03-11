@@ -49,9 +49,27 @@ For whitelisting, we created an array Owners in the contract. The owners are reg
 
 # BidAuction 
 
+Maybe we inversed the meaning of Auction and Bid. 
 
+We created two structures : 
+- **BidAnimal** for the animals too sell by auction 
+- **Auction** to give a bid for a BidAnimal 
+
+The function *setAnimalToBid()* was created to put an animal in auction by the owner of the animal, so we put a modifier OwnerOf(). We created an array **bidanimals** to store the animals put in auction. We emit the event *AnimalToBid* at the end.
+
+There is only one bid per address so we created a firstAuction() modifier. The bid can be updated but we can't create two bids per adress for the same Animal. 
+
+The function *HasNoAuction()* is used for the modifier firstAuction, we verify that there isn't two bid by animal by address.
+
+To claim an auction, we use the function *claimAuction()*, we verify if it is the good person who uses the function with the modifier **ValidatedAuction()** and we transfer the token (the animal).
+
+Every auction can be updated with the function *updatedAuction()*, only the price can be updated. Only the owner of the auction can modify it, we did that with the modifier *onlyAuctionner()*.
 
 # Fighting  
 
+A structure **FightAnimal** was created with the feature readyToFight. When an animal is readyToFight, everyone can fight it. If someone wants to fight this animal, he can use the function *fight()* and every fight is 50% win for each animal. We didn't have the time to perform that.
+The winCount and the lossCount will increase and it will be better to sel them in Auction for example. 
 
+
+# END
 
