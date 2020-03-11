@@ -13,7 +13,7 @@ struct FightAnimal{
 
 FightAnimal[] public fightAnimals;
 
-    function Fight(uint _fightAnimalId1, uint _fightAnimalId2) public OwnerOf(_fightAnimalId1) {
+    function fight(uint _fightAnimalId1, uint _fightAnimalId2) public OwnerOf(_fightAnimalId1) {
         require(fightAnimals[_fightAnimalId2].readyToFight >= 2 days, "The animal you want to fight is not ready");
         uint rand = randMod(2);
         if(rand == 1){
