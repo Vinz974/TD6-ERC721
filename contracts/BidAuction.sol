@@ -26,9 +26,11 @@ uint auctionTime = 2 days;
 mapping(uint => address) auctionToOwner;
 mapping(uint => address) bidAnimalToOwner;
 mapping (uint => uint) bidAnimalIdToAnimalId;
+
 event AnimalSoldAuction(address from, address to, uint animalId, uint price);
 event AnimalToBid(address owner, uint animalId, string species, string name, uint age,
 uint readyTime, string color, uint winCount, uint lossCount);
+event UpdatedAuction(address _owner, uint _bidAnimalId, uint price);
 
 function setAnimalToBid(uint _animalId) public OwnerOf(_animalId) {
     BidAnimal memory bid = BidAnimal(animals[_animalId], 1 seconds, false);
@@ -41,13 +43,17 @@ function setAnimalToBid(uint _animalId) public OwnerOf(_animalId) {
 }
 
 function declareAuction(uint _price, uint _animalId) public payable firstAuction(_animalId) {
-
+    Auction memory A = Auction(_animalId, _price, false);
+    auctions.push(A);
+    uint id = auctions.length;
+    auctionToOwner[id] = msg.sender;
 
 }
 
-/*function updateAuction(uint _price, uint _auctionId) public payable {
-
-}*/
+function updateAuction(uint _price, uint _auctionId) public payable OnlyAuctionner(_auctionId) {
+    auctions[_auctionId].price = _price;
+    emit UpdatedAuction(msg.sender, auctions[_auctionId].animalId, _price);
+}
 
 function HasNoAuction(uint _animalId) internal view returns(bool) {
     bool verif = true;
@@ -75,6 +81,10 @@ modifier ValidatedAuction(uint _auctionId) {
     _;
 }
 
+modifier OnlyAuctionner(uint _auctionId) {
+    require(auctionToOwner[_auctionId] == msg.sender, " You can't change this auction, it is not your auction !");
+    _;
+}
 /*modifier CheckedAuction(Auction storage A) {
     require(A.time <= auctionTime,"Expired Auction");
     _;
