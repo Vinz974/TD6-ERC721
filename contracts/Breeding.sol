@@ -23,24 +23,10 @@ string[] public colors = ["grey","red","blue","white","brown","black"];
 uint randNonce = 0;
 mapping(uint => address) animalToOwner;
 mapping(address => uint) ownerAnimalCount;
-mapping(string => uint) ColorToId;
 
 event NewAnimal(uint Id, string _species, string _name, uint age, uint _readyTime, string _color,uint winCount, uint lossCount);
 event DeadAnimal(uint Id, string _species, string _name, uint age, uint _readyTime, string _color,uint winCount, uint lossCount);
 event BreedAnimal(uint Id1, uint Id2);
-
-/*function AnimalsByOwner(address _owner) public view returns(Animal[] memory) {
-    Animal memory cat = Animal("cat", "felix", 2, 2, "red", 0, 0);
-    Animal[] memory Breeds;
-    Breeds.push(cat);
-    for (uint32 i = 1; i < animals.length; i++) {
-        if (animalToOwner[i] == _owner) {
-            Breeds.push(animals[i]);
-            return Breeds;
-        }
-    }
-
-}*/
 
 function declareAnimal(address _owner, string memory _species, uint _age, string memory _name, string memory _color) public {
     require(msg.sender == _owner, "You are not declaring your animal");
@@ -60,13 +46,22 @@ function deadAnimal(uint _animalId) public {
     animals[_animalId].readyTime, animals[_animalId].color, animals[_animalId].winCount, animals[_animalId].lossCount);
 }
 
+function compareStrings (string memory a, string memory b) public pure
+       returns (bool) {
+  return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))) );
+
+       }
+
 function randMod(uint _modulus) internal returns(uint) {
     randNonce = randNonce.add(1);
     return uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, randNonce))) % _modulus;
   }
 
-function breedAnimal(uint _animalId1, uint _animalId2) public
+function breedAnimal(uint _animalId1, uint _animalId2, string memory _name) public
 ReadyToBreed(_animalId1) ReadyToBreed(_animalId2) OwnerOf(_animalId1) OwnerOf(_animalId2){
+    string memory str1 = animals[_animalId1].species;
+    string memory str2 = animals[_animalId2].species;
+    require(compareStrings(str1, str2), "Not the same species");
     uint rand = randMod(2);
     string memory _color;
     if (rand == 1){
@@ -76,7 +71,7 @@ ReadyToBreed(_animalId1) ReadyToBreed(_animalId2) OwnerOf(_animalId1) OwnerOf(_a
         _color = animals[_animalId2].color;
     }
     emit BreedAnimal(_animalId1, _animalId2);
-    declareAnimal(animalToOwner[_animalId1], animals[_animalId1].species,1 seconds, animals[_animalId1].name, _color);
+    declareAnimal(animalToOwner[_animalId1], animals[_animalId1].species,1 seconds, _name, _color);
     animals[_animalId2].readyTime = 1 seconds;
     animals[_animalId1].readyTime = 1 seconds;
 
